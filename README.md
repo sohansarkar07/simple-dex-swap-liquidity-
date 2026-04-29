@@ -1,10 +1,26 @@
-# SimpleDEX
+<h1 align="center">SimpleDEX</h1>
 
-> A minimal **Automated Market Maker (AMM)** Decentralized Exchange built from scratch using Solidity, Hardhat, and ethers.js — deployed on Ethereum Sepolia testnet.
+<p align="center">
+  <strong>A minimal Automated Market Maker (AMM) Decentralized Exchange built from scratch</strong>
+</p>
 
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.20-blue)](https://soliditylang.org/)
-[![Network](https://img.shields.io/badge/Network-Sepolia-purple)](https://sepolia.etherscan.io/)
-[![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
+<p align="center">
+  <img src="https://img.shields.io/badge/SOLIDITY-363342?style=for-the-badge&logo=solidity&logoColor=white" alt="Solidity" />
+  <img src="https://img.shields.io/badge/ETHEREUM-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Ethereum" />
+  <img src="https://img.shields.io/badge/HARDHAT-FFDB1C?style=for-the-badge&logo=hardhat&logoColor=black" alt="Hardhat" />
+  <img src="https://img.shields.io/badge/LICENSE-MIT-green?style=for-the-badge" alt="License" />
+</p>
+
+<p align="center">
+  🎬 <b>Demo Video</b><br>
+  <a href="#">
+    <img src="https://img.shields.io/badge/▶_WATCH_DEMO-4285F4?style=for-the-badge&logo=google-play&logoColor=white" alt="Watch Demo" />
+  </a>
+</p>
+
+<p align="center">
+  <i>SimpleDEX allows users to swap ERC20 tokens and provide liquidity using the constant-product formula (x * y = k) on the Sepolia testnet.</i>
+</p>
 
 ---
 
@@ -12,17 +28,19 @@
 
 1. [What is a DEX?](#what-is-a-dex)
 2. [DEX vs CEX — Advantages](#dex-vs-cex--advantages-no-middleman)
-3. [What is Liquidity?](#what-is-liquidity)
-4. [Liquidity Providers](#liquidity-providers)
-5. [Constant Product Formula](#constant-product-formula)
-6. [Contract Structure](#contract-structure)
-7. [Contract Usage](#contract-usage)
-8. [Deployed Contracts](#-deployed-contracts-sepolia-testnet)
-9. [Project Structure](#project-structure)
-10. [Setup & Installation](#setup--installation)
-11. [Deployment](#deployment)
-12. [Frontend Setup](#frontend-setup)
-13. [Security Notes](#security-notes)
+3. [🏗️ System Architecture](#️-system-architecture)
+4. [🚀 Task Pipeline](#-task-pipeline)
+5. [What is Liquidity?](#what-is-liquidity)
+6. [Liquidity Providers](#liquidity-providers)
+7. [Constant Product Formula](#constant-product-formula)
+8. [Contract Structure](#contract-structure)
+9. [Contract Usage](#contract-usage)
+10. [Deployed Contracts](#-deployed-contracts-sepolia-testnet)
+11. [Project Structure](#project-structure)
+12. [Setup & Installation](#setup--installation)
+13. [Deployment](#deployment)
+14. [Frontend Setup](#frontend-setup)
+15. [Security Notes](#security-notes)
 
 ---
 
@@ -84,6 +102,55 @@ graph LR
 
 ---
 
+## 🏗️ System Architecture
+
+The following diagram illustrates the high-level architecture of SimpleDEX, showing the interaction between the user interface and the blockchain.
+
+```mermaid
+graph TD
+    User((👤 End User))
+    UI["🖥️ Frontend UI\n(HTML/CSS/JS)"]
+    Ethers["🔗 Ethers.js\n(Web3 Provider)"]
+    Network["🌐 Ethereum Sepolia\n(Blockchain)"]
+
+    subgraph Contracts ["📜 Smart Contracts"]
+        DEX["🏦 SimpleDEX.sol"]
+        TKA["🪙 TokenA.sol"]
+        TKB["🪙 TokenB.sol"]
+    end
+
+    User <--> UI
+    UI <--> Ethers
+    Ethers <--> Network
+    Network <--> DEX
+    DEX <--> TKA
+    DEX <--> TKB
+    
+    style Contracts fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style DEX fill:#4f46e5,color:#fff
+```
+
+---
+
+## 🚀 Task Pipeline
+
+The deployment and development workflow for the project follows these sequential steps.
+
+```mermaid
+graph LR
+    Clone["📂 Clone Repo"] --> Install["📦 npm install"]
+    Install --> Config["⚙️ Config .env"]
+    Config --> Compile["🔨 Compile\n(Hardhat)"]
+    Compile --> Deploy["🚀 Deploy to\nSepolia"]
+    Deploy --> Update["📝 Update\nFrontend addresses"]
+    Update --> Run["💻 Run Web App"]
+    
+    style Deploy fill:#0d9488,color:#fff
+    style Run fill:#4285F4,color:#fff
+```
+
+---
+
 ## What is Liquidity?
 
 **Liquidity** refers to how easily an asset can be bought or sold without significantly affecting its price.
@@ -102,14 +169,6 @@ graph TD
     style LP fill:#0d9488,color:#fff
     style F fill:#1e293b,color:#fff
 ```
-
-**Why does price change?**
-- The pool always maintains `x × y = k`
-- When you buy more of token B, its reserve shrinks → its price rises
-- This is **automatic price discovery** without any human intervention
-
-**High liquidity = small price impact per trade**
-**Low liquidity = large price impact (slippage) per trade**
 
 ---
 
@@ -142,13 +201,6 @@ sequenceDiagram
     DEX-->>LP: ✅ Tokens returned
 ```
 
-**In production AMMs (e.g. Uniswap v2):**
-- LPs receive **LP tokens** proportional to their share of the pool
-- They earn a **0.3% fee** on every swap
-- They can redeem LP tokens to withdraw their share + accumulated fees
-
-> ⚠️ **This SimpleDEX** has no LP tokens and no fees — it's for learning purposes only.
-
 ---
 
 ## Constant Product Formula
@@ -158,11 +210,6 @@ The heart of any AMM is the **constant product invariant**:
 ```
 x × y = k
 ```
-
-Where:
-- `x` = reserve of TokenA in the pool
-- `y` = reserve of TokenB in the pool
-- `k` = a constant that **never changes** during a swap
 
 ### How a Swap is Priced
 
@@ -186,35 +233,6 @@ graph LR
 amountOut = (amountIn × reserveOut) / (reserveIn + amountIn)
 ```
 
-### Numerical Example
-
-| State | reserveA (TKA) | reserveB (TKB) | k |
-|---|---|---|---|
-| Initial | 1000 | 1000 | 1,000,000 |
-| Swap 100 TKA → TKB | 1100 | 909.09 | 1,000,000 ✅ |
-| Swap 200 TKA → TKB | 1300 | 769.23 | 1,000,000 ✅ |
-
-**Key insight:** The more you buy, the worse your rate — this is called **price impact / slippage**. Large trades in small pools get worse prices.
-
-### Price Curve
-
-The constant product formula creates a **hyperbolic curve** where reserves can never reach zero:
-
-```
-         TKB
-          |
-    1000  |*
-          | *
-     500  |   *
-          |      *
-     200  |          *
-          |                *
-          +--+--+--+--+--+--+-- TKA
-           200 500 1000 2000
-```
-
-> The curve asymptotically approaches the axes — meaning you can never drain a pool to zero.
-
 ---
 
 ## Contract Structure
@@ -234,11 +252,8 @@ classDiagram
         +string symbol = "TKA"
         +uint8 decimals = 18
         +uint256 totalSupply
-        +mapping balanceOf
-        +mapping allowance
         +transfer(to, amount) bool
         +approve(spender, amount) bool
-        +transferFrom(from, to, amount) bool
         +mint(to, amount) void
     }
 
@@ -247,11 +262,8 @@ classDiagram
         +string symbol = "TKB"
         +uint8 decimals = 18
         +uint256 totalSupply
-        +mapping balanceOf
-        +mapping allowance
         +transfer(to, amount) bool
         +approve(spender, amount) bool
-        +transferFrom(from, to, amount) bool
         +mint(to, amount) void
     }
 
@@ -273,18 +285,6 @@ classDiagram
     SimpleDEX --> IERC20 : uses
 ```
 
-### File Overview
-
-| File | Purpose |
-|---|---|
-| `contracts/TokenA.sol` | ERC20 token (TKA) — manual implementation, no OpenZeppelin |
-| `contracts/TokenB.sol` | ERC20 token (TKB) — identical structure to TokenA |
-| `contracts/SimpleDEX.sol` | AMM DEX — holds liquidity pool, handles swaps |
-| `scripts/deploy.js` | Deploys all 3 contracts in sequence to any Hardhat network |
-| `frontend/index.html` | Single-page app UI |
-| `frontend/script.js` | ethers.js wallet + contract interaction logic |
-| `hardhat.config.js` | Hardhat config with Sepolia network + dotenv |
-
 ---
 
 ## Contract Usage
@@ -296,51 +296,16 @@ classDiagram
 | `balanceOf` | `balanceOf(address) → uint256` | Returns token balance of an address |
 | `transfer` | `transfer(address to, uint256 amount) → bool` | Send tokens to another wallet |
 | `approve` | `approve(address spender, uint256 amount) → bool` | Allow DEX to spend your tokens |
-| `allowance` | `allowance(address owner, address spender) → uint256` | Check approved amount |
-| `transferFrom` | `transferFrom(address from, address to, uint256 amount) → bool` | DEX calls this to pull tokens from your wallet |
 | `mint` | `mint(address to, uint256 amount)` | Mint test tokens (open access — dev only) |
 
 ### SimpleDEX — Core Functions
 
 | Function | Signature | Description |
 |---|---|---|
-| `addLiquidity` | `addLiquidity(uint256 amountA, uint256 amountB)` | Deposit both tokens into the pool. Requires prior `approve()` on both tokens. |
-| `removeLiquidity` | `removeLiquidity(uint256 amountA, uint256 amountB)` | Withdraw tokens from the pool. Fails if pool has insufficient reserves. |
-| `swapAforB` | `swapAforB(uint256 amountA)` | Sell TKA, receive TKB. Price set by constant product formula. |
+| `addLiquidity` | `addLiquidity(uint256 amountA, uint256 amountB)` | Deposit both tokens into the pool. |
+| `removeLiquidity` | `removeLiquidity(uint256 amountA, uint256 amountB)` | Withdraw tokens from the pool. |
+| `swapAforB` | `swapAforB(uint256 amountA)` | Sell TKA, receive TKB. |
 | `swapBforA` | `swapBforA(uint256 amountB)` | Sell TKB, receive TKA. |
-| `getAmountOut` | `getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) → uint256` | Pure view — preview swap output amount. |
-| `getReserves` | `getReserves() → (uint256, uint256)` | Returns current `(reserveA, reserveB)`. |
-
-### Swap Flow (Step by Step)
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant TKA as TokenA Contract
-    participant DEX as SimpleDEX Contract
-    participant TKB as TokenB Contract
-
-    User->>TKA: approve(DEX_ADDRESS, amountA)
-    TKA-->>User: ✅ Allowance set
-
-    User->>DEX: swapAforB(amountA)
-    DEX->>DEX: amountBOut = getAmountOut(amountA, reserveA, reserveB)
-    DEX->>TKA: transferFrom(User → DEX, amountA)
-    TKA-->>DEX: ✅ TKA received
-    DEX->>TKB: transfer(User, amountBOut)
-    TKB-->>User: ✅ TKB sent
-    DEX->>DEX: reserveA += amountA\nreserveB -= amountBOut
-    DEX-->>User: emit SwapAforB event
-```
-
-### Events Emitted
-
-| Event | When Triggered |
-|---|---|
-| `LiquidityAdded(provider, amountA, amountB)` | On successful `addLiquidity()` |
-| `LiquidityRemoved(provider, amountA, amountB)` | On successful `removeLiquidity()` |
-| `SwapAforB(user, amountAIn, amountBOut)` | On successful TKA → TKB swap |
-| `SwapBforA(user, amountBIn, amountAOut)` | On successful TKB → TKA swap |
 
 ---
 
@@ -352,170 +317,34 @@ sequenceDiagram
 | **TokenB (TKB)** | `0x94f16aE8A8864F9d0977f2595661367B8aff974a` | [View ↗](https://sepolia.etherscan.io/address/0x94f16aE8A8864F9d0977f2595661367B8aff974a) |
 | **SimpleDEX** | `0x40d623F3FE713DE8D812ebd63A5f408E37A09aDe` | [View ↗](https://sepolia.etherscan.io/address/0x40d623F3FE713DE8D812ebd63A5f408E37A09aDe) |
 
-> 🌐 Network: **Ethereum Sepolia Testnet** (Chain ID: 11155111)
-
 ---
 
 ## Project Structure
 
 ```
 simple-dex/
-├── contracts/
-│   ├── TokenA.sol        # ERC20 token (TKA) — manual implementation
-│   ├── TokenB.sol        # ERC20 token (TKB) — manual implementation
-│   └── SimpleDEX.sol     # AMM DEX — constant product formula
-│
-├── scripts/
-│   └── deploy.js         # Deploys TokenA, TokenB, then SimpleDEX
-│
-├── frontend/
-│   ├── index.html        # Single-page UI
-│   ├── style.css         # Styles
-│   ├── script.js         # ethers.js wallet + contract integration
-│   └── ethers.min.js     # ethers.js v5 (local copy)
-│
-├── hardhat.config.js     # Hardhat + Sepolia network config
-├── package.json
-├── .env.example          # Template for environment variables
-└── .gitignore
+├── contracts/        # Smart Contracts (Solidity)
+├── scripts/          # Deployment Scripts
+├── frontend/         # Web Application UI
+├── hardhat.config.js # Hardhat Configuration
+└── package.json      # Dependencies
 ```
 
 ---
 
 ## Setup & Installation
 
-### Prerequisites
-
-| Tool | Version |
-|---|---|
-| Node.js | ≥ 18 |
-| npm | ≥ 9 |
-| MetaMask | Latest browser extension |
-| Sepolia ETH | Get from [sepoliafaucet.com](https://sepoliafaucet.com) |
-
-### 1. Clone the repository
-
-```bash
-git clone <repo-url>
-cd simple-dex
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and fill in:
-
-```env
-ALCHEMY_URL=https://eth-sepolia.g.alchemy.com/v2/<your-key>
-PRIVATE_KEY=<your-wallet-private-key-without-0x>
-```
-
-> ⚠️ **Security:** Never commit your `.env` file. The `.gitignore` already excludes it.
-
----
-
-## Deployment
-
-### Compile contracts
-
-```bash
-npm run compile
-```
-
-### Deploy to Sepolia
-
-```bash
-npm run deploy:sepolia
-```
-
-**Expected output:**
-
-```
-Deploying contracts with account: 0xYourAddress
-Deployer balance: X.XX ETH
-
-TokenA deployed to:   0xAAA...
-TokenB deployed to:   0xBBB...
-SimpleDEX deployed to: 0xCCC...
-
-─────────────────────────────────────────────
-✅  Deployment complete. Update frontend/script.js with:
-─────────────────────────────────────────────
-  TOKEN_A_ADDRESS = "0xAAA..."
-  TOKEN_B_ADDRESS = "0xBBB..."
-  DEX_ADDRESS     = "0xCCC..."
-```
-
-### Deploy to local Hardhat node (for development)
-
-```bash
-# Terminal 1 – start local node
-npm run node
-
-# Terminal 2 – deploy
-npm run deploy:local
-```
-
----
-
-## Frontend Setup
-
-### 1. Update contract addresses
-
-Open `frontend/script.js` and set the deployed addresses:
-
-```js
-const TOKEN_A_ADDRESS = "0xAAA...";
-const TOKEN_B_ADDRESS = "0xBBB...";
-const DEX_ADDRESS     = "0xCCC...";
-```
-
-### 2. Run the frontend
-
-```bash
-npm run dev
-```
-
-Or just open `frontend/index.html` directly in your browser.
-
-### 3. Use the DEX
-
-1. Click **Connect Wallet** — MetaMask will prompt for access.
-2. Ensure you are on the **Sepolia** network in MetaMask.
-3. **Mint tokens** — via [Etherscan Write Contract](https://sepolia.etherscan.io/address/0x70755E14980418aDe2dded4E5ab4DDA21379c97d#writeContract) if your wallet has none.
-4. **Add Liquidity** — enter amounts of TKA and TKB, approve, then deposit.
-5. **Swap** — enter an input amount, check the estimated output, confirm.
-6. **Remove Liquidity** — enter amounts to withdraw back.
-
----
-
-## Testing
-
-```bash
-npm run test
-```
-
-Tests should be placed in the `test/` directory (create as needed).
+1. **Clone the repository**
+2. **Install dependencies**: `npm install`
+3. **Configure .env**: Add `ALCHEMY_URL` and `PRIVATE_KEY`
+4. **Deploy**: `npm run deploy:sepolia`
+5. **Run Frontend**: `npm run dev`
 
 ---
 
 ## Security Notes
 
-This project is for **educational purposes only**.
-
-- ❌ No LP tokens — liquidity removal is not proportional to share
-- ❌ No trading fee — not production-ready
-- ❌ `mint()` is open to any address — not production-ready
-- ❌ Not audited
+This project is for **educational purposes only**. It is not audited and does not include LP tokens or trading fees.
 
 ---
 
