@@ -1,0 +1,15 @@
+# Dependency directories
+node_modules/
+
+# Hardhat artifacts and cache (auto-generated)
+artifacts/
+cache/
+
+# Environment secrets — NEVER commit your real .env
+.env
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

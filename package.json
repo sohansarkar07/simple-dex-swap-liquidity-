@@ -1,0 +1,19 @@
+{
+  "name": "simple-dex",
+  "version": "1.0.0",
+  "description": "A minimal decentralized exchange (AMM) built with Solidity and Hardhat.",
+  "private": true,
+  "scripts": {
+    "compile":       "hardhat compile",
+    "test":          "hardhat test",
+    "deploy:local":  "hardhat run scripts/deploy.js --network hardhat",
+    "deploy:sepolia":"hardhat run scripts/deploy.js --network sepolia",
+    "node":          "hardhat node",
+    "dev":           "npx -y serve frontend"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.3"
+  }
+}

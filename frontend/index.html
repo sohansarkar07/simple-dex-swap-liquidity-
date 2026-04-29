@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SimpleDEX – A minimal decentralized exchange for swapping TokenA and TokenB using an AMM constant-product formula." />
+  <title>SimpleDEX | Decentralized Exchange</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="ethers.min.js" type="application/javascript"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="brand-icon">⬡</span>
+        <span class="brand-name">SimpleDEX</span>
+        <span class="brand-tag">AMM · Sepolia Testnet</span>
+      </div>
+
+      <div class="header-right">
+        <div id="network-badge" class="network-badge hidden">
+          <span class="dot"></span>
+          <span id="network-name">Unknown</span>
+        </div>
+
+        <div id="wallet-info" class="wallet-info hidden">
+          <span id="wallet-address" class="wallet-address">—</span>
+        </div>
+
+        <button id="btn-connect" class="btn btn-primary" onclick="connectWallet()">
+          Connect Wallet
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <div id="status-bar" class="status-bar hidden">
+      <span id="status-icon" class="status-icon">⏳</span>
+      <span id="status-message">Processing…</span>
+    </div>
+
+    <section class="section" id="section-balances">
+      <h2 class="section-title">Token Balances</h2>
+      <div class="balance-grid">
+        <div class="balance-card">
+          <div class="balance-label">ETH Balance</div>
+          <div class="balance-value" id="balance-eth">—</div>
+        </div>
+        <div class="balance-card">
+          <div class="balance-label">Token A (TKA)</div>
+          <div class="balance-value" id="balance-a">—</div>
+        </div>
+        <div class="balance-card">
+          <div class="balance-label">Token B (TKB)</div>
+          <div class="balance-value" id="balance-b">—</div>
+        </div>
+        <div class="balance-card reserve-card">
+          <div class="balance-label">Pool Reserve A</div>
+          <div class="balance-value" id="reserve-a">—</div>
+        </div>
+        <div class="balance-card reserve-card">
+          <div class="balance-label">Pool Reserve B</div>
+          <div class="balance-value" id="reserve-b">—</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btn-refresh" onclick="refreshBalances()" disabled>
+        ↻ Refresh
+      </button>
+    </section>
+
+    <div class="panels-grid">
+
+      <section class="card" id="section-add-liquidity">
+        <h2 class="card-title">Add Liquidity</h2>
+        <p class="card-desc">Deposit TokenA and TokenB into the pool to earn a share of the reserves.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="add-amount-a">TokenA Amount</label>
+          <input class="form-input" id="add-amount-a" type="number" min="0" step="any" placeholder="0.0" disabled />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="add-amount-b">TokenB Amount</label>
+          <input class="form-input" id="add-amount-b" type="number" min="0" step="any" placeholder="0.0" disabled />
+        </div>
+
+        <button class="btn btn-primary btn-full" id="btn-add-liquidity" onclick="addLiquidity()" disabled>
+          Add Liquidity
+        </button>
+      </section>
+
+      <section class="card" id="section-remove-liquidity">
+        <h2 class="card-title">Remove Liquidity</h2>
+        <p class="card-desc">Withdraw your TokenA and TokenB from the pool reserves.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="rem-amount-a">TokenA Amount</label>
+          <input class="form-input" id="rem-amount-a" type="number" min="0" step="any" placeholder="0.0" disabled />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rem-amount-b">TokenB Amount</label>
+          <input class="form-input" id="rem-amount-b" type="number" min="0" step="any" placeholder="0.0" disabled />
+        </div>
+
+        <button class="btn btn-secondary btn-full" id="btn-remove-liquidity" onclick="removeLiquidity()" disabled>
+          Remove Liquidity
+        </button>
+      </section>
+
+      <section class="card" id="section-swap-a">
+        <h2 class="card-title">Swap TokenA → TokenB</h2>
+        <p class="card-desc">Sell TokenA and receive TokenB at the current AMM rate.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="swap-a-input">TokenA to sell</label>
+          <input class="form-input" id="swap-a-input" type="number" min="0" step="any" placeholder="0.0" disabled oninput="previewSwapAforB()" />
+        </div>
+
+        <div class="preview-box" id="preview-a-for-b">
+          <span class="preview-label">Estimated output:</span>
+          <span class="preview-value" id="est-b-out">—</span>
+          <span class="preview-unit">TKB</span>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="btn-swap-a-for-b" onclick="swapAforB()" disabled>
+          Swap A → B
+        </button>
+      </section>
+
+      <section class="card" id="section-swap-b">
+        <h2 class="card-title">Swap TokenB → TokenA</h2>
+        <p class="card-desc">Sell TokenB and receive TokenA at the current AMM rate.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="swap-b-input">TokenB to sell</label>
+          <input class="form-input" id="swap-b-input" type="number" min="0" step="any" placeholder="0.0" disabled oninput="previewSwapBforA()" />
+        </div>
+
+        <div class="preview-box" id="preview-b-for-a">
+          <span class="preview-label">Estimated output:</span>
+          <span class="preview-value" id="est-a-out">—</span>
+          <span class="preview-unit">TKA</span>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="btn-swap-b-for-a" onclick="swapBforA()" disabled>
+          Swap B → A
+        </button>
+      </section>
+
+    </div>
+
+    <section class="section about-section" id="section-about">
+      <h2 class="section-title">About This Project</h2>
+
+      <div class="about-grid">
+
+        <div class="about-card">
+          <h3 class="about-heading">What is a DEX?</h3>
+          <p class="about-text">
+            A <strong>Decentralized Exchange (DEX)</strong> is a peer-to-peer marketplace
+            that allows users to trade tokens directly from their wallets — no central
+            authority, no custodian holds your funds. Trades are executed by smart contracts
+            deployed on a blockchain.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <h3 class="about-heading">What is Liquidity?</h3>
+          <p class="about-text">
+            <strong>Liquidity</strong> refers to the pool of tokens locked in the DEX smart
+            contract that makes trading possible. Liquidity providers deposit pairs of tokens
+            (e.g., TKA + TKB) into the pool. The deeper the pool, the less price impact each
+            trade has.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <h3 class="about-heading">How Does Swapping Work?</h3>
+          <p class="about-text">
+            This DEX uses the <strong>constant-product AMM formula</strong>:
+            <code class="inline-code">x × y = k</code>.
+            When you swap Token A for Token B, the amount you receive is:
+            <br /><br />
+            <code class="inline-code">amountOut = (amountIn × reserveOut) / (reserveIn + amountIn)</code>
+            <br /><br />
+            The price shifts with each trade — selling more A makes A cheaper relative to B.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <span>SimpleDEX — Educational AMM project · Sepolia testnet</span>
+    <span>Built with Solidity, Hardhat &amp; ethers.js</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
