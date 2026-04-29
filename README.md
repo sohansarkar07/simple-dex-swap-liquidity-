@@ -12,7 +12,8 @@
 </p>
 
 <p align="center">
-  <b>Live Demo: <a href="https://simple-dex-swap-liquidity.vercel.app/">simple-dex-swap-liquidity.vercel.app</a></b>
+  <b>Live Demo: <a href="https://simple-dex-swap-liquidity.vercel.app/">simple-dex-swap-liquidity.vercel.app</a></b><br>
+  <b>Transaction Proof: <a href="https://sepolia.etherscan.io/tx/0xf118a9b4a60afa330e07e184247073cc8eb8c7f2e819a99af215a6495265850c">View on Etherscan</a></b>
 </p>
 
 <p align="center">
