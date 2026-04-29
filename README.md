@@ -12,6 +12,10 @@
 </p>
 
 <p align="center">
+  🚀 <b>Live Demo: <a href="https://simple-dex-swap-liquidity.vercel.app/">simple-dex-swap-liquidity.vercel.app</a></b>
+</p>
+
+<p align="center">
   🎬 <b>Demo Video</b><br>
   <a href="#">
     <img src="https://img.shields.io/badge/▶_WATCH_DEMO-4285F4?style=for-the-badge&logo=google-play&logoColor=white" alt="Watch Demo" />
