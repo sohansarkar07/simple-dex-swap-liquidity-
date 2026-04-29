@@ -12,11 +12,11 @@
 </p>
 
 <p align="center">
-  🚀 <b>Live Demo: <a href="https://simple-dex-swap-liquidity.vercel.app/">simple-dex-swap-liquidity.vercel.app</a></b>
+  <b>Live Demo: <a href="https://simple-dex-swap-liquidity.vercel.app/">simple-dex-swap-liquidity.vercel.app</a></b>
 </p>
 
 <p align="center">
-  🎬 <b>Demo Video</b><br>
+  <b>Demo Video</b><br>
   <a href="#">
     <img src="https://img.shields.io/badge/▶_WATCH_DEMO-4285F4?style=for-the-badge&logo=google-play&logoColor=white" alt="Watch Demo" />
   </a>
@@ -32,14 +32,14 @@
 
 1. [What is a DEX?](#what-is-a-dex)
 2. [DEX vs CEX — Advantages](#dex-vs-cex--advantages-no-middleman)
-3. [🏗️ System Architecture](#️-system-architecture)
-4. [🚀 Task Pipeline](#-task-pipeline)
+3. [System Architecture](#system-architecture)
+4. [Task Pipeline](#task-pipeline)
 5. [What is Liquidity?](#what-is-liquidity)
 6. [Liquidity Providers](#liquidity-providers)
 7. [Constant Product Formula](#constant-product-formula)
 8. [Contract Structure](#contract-structure)
 9. [Contract Usage](#contract-usage)
-10. [Deployed Contracts](#-deployed-contracts-sepolia-testnet)
+10. [Deployed Contracts](#deployed-contracts-sepolia-testnet)
 11. [Project Structure](#project-structure)
 12. [Setup & Installation](#setup--installation)
 13. [Deployment](#deployment)
@@ -56,21 +56,21 @@ Unlike traditional exchanges (Coinbase, Binance), a DEX runs entirely on **smart
 
 ```mermaid
 graph TD
-    A["👤 User A\n(Has TokenA)"] -->|"Sends TokenA"| P["🏦 Liquidity Pool\nSmart Contract"]
+    A["User A\n(Has TokenA)"] -->|"Sends TokenA"| P["Liquidity Pool\nSmart Contract"]
     P -->|"Sends TokenB"| A
-    B["👤 User B\n(Has TokenB)"] -->|"Sends TokenB"| P
+    B["User B\n(Has TokenB)"] -->|"Sends TokenB"| P
     P -->|"Sends TokenA"| B
-    P -->|"Holds reserves"| R["📦 reserveA + reserveB\n(x × y = k)"]
+    P -->|"Holds reserves"| R["reserveA + reserveB\n(x × y = k)"]
 
     style P fill:#4f46e5,color:#fff
     style R fill:#0f172a,color:#fff
 ```
 
 **Key properties of a DEX:**
-- 🔓 **Non-custodial** — you always control your private keys
-- 📖 **Transparent** — all code is open source and on-chain
-- 🌐 **Permissionless** — anyone can trade or provide liquidity without an account
-- 🤖 **Automated** — pricing is handled by an algorithm (AMM), not humans
+- Non-custodial — you always control your private keys
+- Transparent — all code is open source and on-chain
+- Permissionless — anyone can trade or provide liquidity without an account
+- Automated — pricing is handled by an algorithm (AMM), not humans
 
 ---
 
@@ -82,45 +82,45 @@ A **DEX** removes this middleman entirely.
 
 ```mermaid
 graph LR
-    subgraph CEX ["❌ Centralized Exchange (CEX)"]
+    subgraph CEX ["Centralized Exchange (CEX)"]
         U1["User"] -->|"Deposit funds"| E["Exchange\n(Controls your money)"]
         E -->|"Match order"| U2["Counterparty"]
-        E -.->|"Can freeze, hack, rug"| X["⚠️ Risk"]
+        E -.->|"Can freeze, hack, rug"| X["Risk"]
     end
 
-    subgraph DEX ["✅ Decentralized Exchange (DEX)"]
+    subgraph DEX ["Decentralized Exchange (DEX)"]
         U3["User"] -->|"Interact directly"| SC["Smart Contract\n(No one controls it)"]
         SC -->|"Automatic swap"| U3
-        SC -.->|"Rules fixed in code"| S["✅ Safe & Transparent"]
+        SC -.->|"Rules fixed in code"| S["Safe & Transparent"]
     end
 ```
 
 | Feature | CEX | DEX |
 |---|---|---|
 | Custody of funds | Exchange holds them | You hold them |
-| KYC Required | ✅ Yes | ❌ No |
-| Can be hacked/frozen | ✅ Yes | ❌ No (only smart contract risk) |
-| 24/7 availability | Depends | ✅ Always |
-| Transparent pricing | ❌ Hidden order book | ✅ On-chain formula |
-| Permissionless | ❌ Account required | ✅ Just a wallet |
+| KYC Required | Yes | No |
+| Can be hacked/frozen | Yes | No (only smart contract risk) |
+| 24/7 availability | Depends | Always |
+| Transparent pricing | Hidden order book | On-chain formula |
+| Permissionless | Account required | Just a wallet |
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 The following diagram illustrates the high-level architecture of SimpleDEX, showing the interaction between the user interface and the blockchain.
 
 ```mermaid
 graph TD
-    User((👤 End User))
-    UI["🖥️ Frontend UI\n(HTML/CSS/JS)"]
-    Ethers["🔗 Ethers.js\n(Web3 Provider)"]
-    Network["🌐 Ethereum Sepolia\n(Blockchain)"]
+    User((End User))
+    UI["Frontend UI\n(HTML/CSS/JS)"]
+    Ethers["Ethers.js\n(Web3 Provider)"]
+    Network["Ethereum Sepolia\n(Blockchain)"]
 
-    subgraph Contracts ["📜 Smart Contracts"]
-        DEX["🏦 SimpleDEX.sol"]
-        TKA["🪙 TokenA.sol"]
-        TKB["🪙 TokenB.sol"]
+    subgraph Contracts ["Smart Contracts"]
+        DEX["SimpleDEX.sol"]
+        TKA["TokenA.sol"]
+        TKB["TokenB.sol"]
     end
 
     User <--> UI
@@ -136,18 +136,18 @@ graph TD
 
 ---
 
-## 🚀 Task Pipeline
+## Task Pipeline
 
 The deployment and development workflow for the project follows these sequential steps.
 
 ```mermaid
 graph LR
-    Clone["📂 Clone Repo"] --> Install["📦 npm install"]
-    Install --> Config["⚙️ Config .env"]
-    Config --> Compile["🔨 Compile\n(Hardhat)"]
-    Compile --> Deploy["🚀 Deploy to\nSepolia"]
-    Deploy --> Update["📝 Update\nFrontend addresses"]
-    Update --> Run["💻 Run Web App"]
+    Clone["Clone Repo"] --> Install["npm install"]
+    Install --> Config["Config .env"]
+    Config --> Compile["Compile\n(Hardhat)"]
+    Compile --> Deploy["Deploy to\nSepolia"]
+    Deploy --> Update["Update\nFrontend addresses"]
+    Update --> Run["Run Web App"]
     
     style Deploy fill:#0d9488,color:#fff
     style Run fill:#4285F4,color:#fff
@@ -163,12 +163,12 @@ In a DEX, liquidity is not provided by an order book — instead, users **deposi
 
 ```mermaid
 graph TD
-    LP["💰 Liquidity Pool\n(reserveA=1000 TKA, reserveB=1000 TKB)"]
+    LP["Liquidity Pool\n(reserveA=1000 TKA, reserveB=1000 TKB)"]
 
-    T1["🔄 Trader swaps\n100 TKA → TKB"] -->|"adds TKA to pool"| LP
+    T1["Trader swaps\n100 TKA → TKB"] -->|"adds TKA to pool"| LP
     LP -->|"sends TKB to trader"| T1
 
-    LP --> F["📊 After Swap:\nreserveA = 1100 TKA\nreserveB ≈ 909 TKB\nPrice of TKB goes UP ↑"]
+    LP --> F["After Swap:\nreserveA = 1100 TKA\nreserveB ≈ 909 TKB\nPrice of TKB goes UP"]
 
     style LP fill:#0d9488,color:#fff
     style F fill:#1e293b,color:#fff
@@ -182,27 +182,27 @@ graph TD
 
 ```mermaid
 sequenceDiagram
-    participant LP as 💼 Liquidity Provider
-    participant Token as 🪙 Token Contracts
-    participant DEX as 🏦 SimpleDEX Contract
+    participant LP as Liquidity Provider
+    participant Token as Token Contracts
+    participant DEX as SimpleDEX Contract
 
     LP->>Token: approve(DEX_ADDRESS, amountA)
-    Token-->>LP: ✅ Approved
+    Token-->>LP: Approved
 
     LP->>Token: approve(DEX_ADDRESS, amountB)
-    Token-->>LP: ✅ Approved
+    Token-->>LP: Approved
 
     LP->>DEX: addLiquidity(amountA, amountB)
     DEX->>Token: transferFrom(LP → DEX, amountA)
     DEX->>Token: transferFrom(LP → DEX, amountB)
-    DEX-->>LP: ✅ Liquidity Added (reserveA ↑, reserveB ↑)
+    DEX-->>LP: Liquidity Added (reserveA ↑, reserveB ↑)
 
     Note over LP,DEX: Later, LP can call removeLiquidity()
 
     LP->>DEX: removeLiquidity(amountA, amountB)
     DEX->>Token: transfer(LP, amountA)
     DEX->>Token: transfer(LP, amountB)
-    DEX-->>LP: ✅ Tokens returned
+    DEX-->>LP: Tokens returned
 ```
 
 ---
@@ -313,7 +313,7 @@ classDiagram
 
 ---
 
-## 🚀 Deployed Contracts (Sepolia Testnet)
+## Deployed Contracts (Sepolia Testnet)
 
 | Contract | Address | Etherscan |
 |---|---|---|
